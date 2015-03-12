@@ -28,12 +28,19 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/coreos/etcd/etcdmain"
 	"github.com/coreos/etcd/migrate/starter"
 	"github.com/coreos/etcd/pkg/coreos"
 )
 
 func main() {
+	logrus.SetFormatter(&LogFormatter{})
+
+	w := logrus.StandardLogger().Writer()
+	defer w.Close()
+	log.SetOutput(w)
+
 	if str := os.Getenv("ETCD_ALLOW_LEGACY_MODE"); str != "" {
 		v, err := strconv.ParseBool(str)
 		if err != nil {
